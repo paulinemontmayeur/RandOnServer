@@ -1,0 +1,53 @@
+info it worked if it ends with ok
+verbose cli [ 'node', '/usr/bin/npm', 'install' ]
+info using npm@1.1.4
+info using node@v0.6.12
+verbose config file /home/flaendil/.npmrc
+verbose config file /usr/etc/npmrc
+verbose config file /usr/share/npm/npmrc
+verbose caching /home/flaendil/Documents/node-js-getting-started/package.json
+verbose loadDefaults node-js-getting-started@0.1.2
+verbose readDependencies: using package.json deps
+verbose where, deps [ '/home/flaendil/Documents/node-js-getting-started',
+verbose where, deps   [ 'express' ] ]
+verbose from cache /home/flaendil/Documents/node-js-getting-started/package.json
+info preinstall node-js-getting-started@0.1.2
+verbose from cache /home/flaendil/Documents/node-js-getting-started/package.json
+verbose readDependencies: using package.json deps
+verbose cache add [ 'express@~4.9.x', null ]
+silly cache add: name, spec, args [ undefined, 'express@~4.9.x', [ 'express@~4.9.x', null ] ]
+verbose parsed url { pathname: 'express@~4.9.x',
+verbose parsed url   path: 'express@~4.9.x',
+verbose parsed url   href: 'express@~4.9.x' }
+silly cache add: name, spec, args [ 'express', '~4.9.x', [ 'express', '~4.9.x' ] ]
+verbose parsed url { pathname: '~4.9.x', path: '~4.9.x', href: '~4.9.x' }
+verbose addNamed [ 'express', '~4.9.x' ]
+verbose addNamed [ null, '>=4.9.0- <4.10.0-' ]
+silly name, range, hasData [ 'express', '>=4.9.0- <4.10.0-', false ]
+verbose raw, before any munging express
+verbose url resolving [ 'https://registry.npmjs.org/', './express' ]
+verbose url resolved https://registry.npmjs.org/express
+http GET https://registry.npmjs.org/express
+ERR! Error: failed to fetch from registry: express
+ERR!     at /usr/share/npm/lib/utils/npm-registry-client/get.js:139:12
+ERR!     at cb (/usr/share/npm/lib/utils/npm-registry-client/request.js:31:9)
+ERR!     at Request._callback (/usr/share/npm/lib/utils/npm-registry-client/request.js:136:18)
+ERR!     at Request.callback (/usr/lib/nodejs/request/main.js:119:22)
+ERR!     at Request.<anonymous> (/usr/lib/nodejs/request/main.js:212:58)
+ERR!     at Request.emit (events.js:88:20)
+ERR!     at ClientRequest.<anonymous> (/usr/lib/nodejs/request/main.js:412:12)
+ERR!     at ClientRequest.emit (events.js:67:17)
+ERR!     at HTTPParser.onIncoming (http.js:1261:11)
+ERR!     at HTTPParser.onHeadersComplete (http.js:102:31)
+ERR! You may report this log at:
+ERR!     <http://bugs.debian.org/npm>
+ERR! or use
+ERR!     reportbug --attach /home/flaendil/Documents/node-js-getting-started/npm-debug.log npm
+ERR! 
+ERR! System Linux 3.11.0-15-generic
+ERR! command "node" "/usr/bin/npm" "install"
+ERR! cwd /home/flaendil/Documents/node-js-getting-started
+ERR! node -v v0.6.12
+ERR! npm -v 1.1.4
+ERR! message failed to fetch from registry: express
+verbose exit [ 1, true ]
