@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node index.js"
   },
+  "dependencies": {
+    "ws": "0.4.x"
+  },
   "engines": {
     "node": "0.10.x"
   },
