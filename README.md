@@ -1,18 +1,39 @@
-# Node.js Websocket Test
+# Rand'On server
 
-A tiny demo using the [einaros/ws](http://einaros.github.io/ws/) WebSockets implementation.
+# Get ready as a contributor
 
-# Running Locally
+Install heroku toolbelt from  https://toolbelt.herokuapp.com 
 
-``` bash
+Log in using 
+```
+heroku login
+```
+
+## Clone
+
+```
+heroku keys:add
+heroku git:clone --app <appName>
+```
+
+## Commit all changes
+
+```
+git add .
+git commit -a -m "Description of the changes I made"
+git push heroku master
+git push github master
+```
+
+## Running Locally
+
+```
 npm install
 npm start
 ```
 
-# Running on Heroku
+## Running on Heroku
 
-``` bash
-heroku create
-git push heroku master
+```
 heroku open
 ```
