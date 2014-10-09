@@ -31,6 +31,20 @@ git push github master
 npm install
 npm start
 ```
+If the following error appear :
+```
+npm ERR! weird error 127
+npm WARN This failure might be due to the use of legacy binary "node"
+npm WARN For further explanations, please read /usr/share/doc/nodejs/README.Debian
+ 
+npm ERR! not ok code 0
+
+```
+Then you have to install the package ```nodejs-legacy``` using :
+```
+sudo apt-get install nodejs-legacy
+```
+AND replacing all "node" command with "nodejs" in the Procfile.
 
 ## Running on Heroku
 
