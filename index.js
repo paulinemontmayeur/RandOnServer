@@ -5,7 +5,7 @@ app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(request, response) {
-  response.send("Welcome to Rand'On first page")
+  response.send("Welcome to Rand'On first page (After some commit)")
 })
 
 app.listen(app.get('port'), function() {
