@@ -11,7 +11,8 @@
     "express": "^4.4.5",
     "http": "0.0.0  ",
     "mongoose": "^3.8.18",
-    "ws": "0.4.x"
+    "ws": "0.4.x",
+    "html-entities": "1.1.1"
   },
   "engines": {
     "node": "0.10.x"

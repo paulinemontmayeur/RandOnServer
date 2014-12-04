@@ -28,29 +28,46 @@ var User = mongoose.model('User', userSchema);
 module.exports.registerUser = function(user,response) {
     var localUser = user;
     var localResponse = response;
-    User.find({userName : user.username ,emailAddress : user.email}, function(err, obj) {
-        if (obj.length > 0) {
-            console.log('User already exists');
-            localResponse.status(403).send({ error: 'User already exists' });
-        }
-        else {
-            var user = new User ({
-                userName: localUser.username,
-                password: localUser.password,
-                emailAddress: localUser.email
-            });
 
-            user.save(function (err) {
-                if (err) {
-                    console.log('Error on save!')
-                    localResponse.status(500).send({ error: 'Error on save' });
-                }
-                else {
-                    localResponse.status(201).send({ error: 'User successfully created' });
-                }
-            });
-        }
-    });
+    //--- Vérification des champs de user
+    // On sélectionne toutes les entités HTML
+    var Entities = require('html-entities').AllHtmlEntities;
+    entities = new Entities();
+
+    // On analyse le résultat de l'encodage : ENLEVER "0 &&" POUR RENDRE OPERATIONNEL
+    if(/*===>*/0 &&/*<===*/ (entities.encode(localUser.username).indexOf('&') > -1 ||
+        entities.encode(localUser.password).indexOf('&') > -1 ||
+        entities.encode(localUser.email).indexOf('&') > -1)){
+        console.log('Bad character used !');
+        localResponse.status(500).send({ error: 'Bad character'});
+    }
+    else{
+        User.find({userName : user.username ,emailAddress : user.email}, function(err, obj) {
+            if (obj.length > 0) {
+                console.log('User already exists');
+                localResponse.status(403).send({ error: 'User already exists' });
+            }
+            else {
+                var user = new User ({
+                    userName: localUser.username,
+                    password: localUser.password,
+                    emailAddress: localUser.email
+                });
+
+                user.save(function (err) {
+                    if (err) {
+                        console.log('Error on save!')
+                        localResponse.status(500).send({ error: 'Error on save' });
+                    }
+                    else {
+                        localResponse.status(201).send({ error: 'User successfully created' });
+                    }
+                });
+            }
+        });
+    }
+
+    
 }
 
 module.exports.loginUser = function(user,response) {
