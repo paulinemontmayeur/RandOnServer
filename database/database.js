@@ -2,6 +2,8 @@
  * Created by thomasthiebaud on 25/11/14.
  */
 var mongoose = require('mongoose')
+var Entities = require('html-entities').AllHtmlEntities;
+
 var userSchema = mongoose.Schema({
     userName		: String
     , password		: String
@@ -29,23 +31,19 @@ module.exports.registerUser = function(user,response) {
     var localUser = user;
     var localResponse = response;
 
-    //--- Vérification des champs de user
-    // On sélectionne toutes les entités HTML
-    var Entities = require('html-entities').AllHtmlEntities;
-    entities = new Entities();
+    // Select all HTML entities
+    var entities = new Entities();
 
-    // On analyse le résultat de l'encodage : ENLEVER "0 &&" POUR RENDRE OPERATIONNEL
-    if(/*===>*/0 &&/*<===*/ (entities.encode(localUser.username).indexOf('&') > -1 ||
-        entities.encode(localUser.password).indexOf('&') > -1 ||
-        entities.encode(localUser.email).indexOf('&') > -1)){
+    // Analyse encode result
+    if((entities.encode(localUser.username).indexOf('&') > -1 || entities.encode(localUser.password).indexOf('&') > -1 || entities.encode(localUser.email).indexOf('&') > -1)) {
         console.log('Bad character used !');
-        localResponse.status(500).send({ error: 'Bad character'});
+        localResponse.status(500).send({ description: 'Bad character used'});
     }
-    else{
+    else {
         User.find({userName : user.username ,emailAddress : user.email}, function(err, obj) {
             if (obj.length > 0) {
                 console.log('User already exists');
-                localResponse.status(403).send({ error: 'User already exists' });
+                localResponse.status(403).send({ description: 'User already exists' });
             }
             else {
                 var user = new User ({
@@ -57,10 +55,10 @@ module.exports.registerUser = function(user,response) {
                 user.save(function (err) {
                     if (err) {
                         console.log('Error on save!')
-                        localResponse.status(500).send({ error: 'Error on save' });
+                        localResponse.status(500).send({ description: 'Error on save' });
                     }
                     else {
-                        localResponse.status(201).send({ error: 'User successfully created' });
+                        localResponse.status(201).send({ description: 'User successfully created' });
                     }
                 });
             }
@@ -72,17 +70,17 @@ module.exports.registerUser = function(user,response) {
 
 module.exports.loginUser = function(user,response) {
     var localResponse = response;
-    User.find({userName : user.username ,emailAddress : user.email}, function(err, obj) {
+    User.find({userName : user.username ,password : user.password}, function(err, obj) {
         if (obj.length > 0) {
             console.log('User found');
 
             //TODO Create and add user to session
 
-            localResponse.status(200).send({ error: 'User found' });
+            localResponse.status(200).send({ description: 'User found' });
         }
         else {
             console.log('User not found')
-            localResponse.status(500).send({ error: 'User not found' });
+            localResponse.status(500).send({ description: 'User not found' });
         }
     });
 }

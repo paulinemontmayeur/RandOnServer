@@ -9,10 +9,10 @@
     "bcryptjs": "^2.1.0",
     "body-parser": "^1.9.3",
     "express": "^4.4.5",
+    "html-entities": "^1.1.1",
     "http": "0.0.0  ",
     "mongoose": "^3.8.18",
-    "ws": "0.4.x",
-    "html-entities": "1.1.1"
+    "ws": "0.4.x"
   },
   "engines": {
     "node": "0.10.x"

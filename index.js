@@ -44,3 +44,7 @@ app.post('/register', function(request, response) {
     database.registerUser(user,response);
 })
 
+app.post('/logout', function(request, response) {
+    response.status(200).send({ message: 'Successfully logout' });
+})
+
