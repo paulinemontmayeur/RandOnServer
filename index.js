@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var app = express();
 app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname + '/public'))
-    .use(bodyParser.urlencoded())
+    .use(bodyParser.json())
     .use(cookieParser())
     .use(session({
         secret: 'keyboard cat',
@@ -19,8 +19,14 @@ app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'))
 })
 
+/**+
+ * Restrict function. Check if the user is log in.
+ * @param req
+ * @param res
+ * @param next
+ */
 function restrict(req, res, next) {
-    if (req.session.user) {
+    if (req.session.userId) {
         next();
     } else {
         console.log('Access denied!');
@@ -28,41 +34,38 @@ function restrict(req, res, next) {
     }
 }
 
+/**
+ * Default route
+ */
 app.get('/', function(request, response) {
   response.send("Welcome to Rand'On first page (After some commit)")
 })
 
+/**
+ * Login an user
+ */
 app.post('/login', function(request, response) {
-    console.log('Name : ' + request.body.username);
-    console.log('Password : ' + request.body.password);
-    console.log('Email : ' + request.body.email);
-
-    var user = {
-        username : request.body.username,
-        password : request.body.password,
-        email : request.body.email
-    }
-
-    database.loginUser(user,request,response);
+    database.loginUser(request,response);
 })
 
+/**
+ * Register an user
+ */
 app.post('/register', function(request, response) {
-    console.log('Name : ' + request.body.username);
-    console.log('Password : ' + request.body.password);
-    console.log('Email : ' + request.body.email);
-
-    var user = {
-        username : request.body.username,
-        password : request.body.password,
-        email : request.body.email
-    }
-
-    database.registerUser(user,response);
+    database.registerUser(request,response);
 })
 
+/**
+ * Logout an user
+ */
 app.post('/logout',restrict, function(request, response) {
-    request.session.destroy(function(){
-        response.status(200).send({ description: 'Successfully logout' });
-    });
+    database.logoutUser(request,response);
+})
+
+/**
+ * Create a hike
+ */
+app.post('/create',restrict, function(request, response) {
+    database.createHike(request,response)
 })
 
