@@ -5,8 +5,8 @@
 /**
  * Return http response. Print message in console.
  * @param response
- * @param code
- * @param description
+ * @param code Http status code
+ * @param description Description of the response
  */
 module.exports.httpResponse = function(response,code,description) {
     var s
@@ -24,4 +24,15 @@ module.exports.httpResponse = function(response,code,description) {
 
     console.log(s + description)
     response.status(code).send({description : description});
+}
+
+/**
+ *
+ * @param request
+ * @param response
+ * @param name Name of the parameter to check
+ * @param type Type of the parameter to check
+ */
+module.exports.checkParameter = function(request,response,name,type) {
+    //TODO Check if the given parameter exists and if it is to the right format
 }

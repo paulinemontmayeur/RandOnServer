@@ -92,3 +92,10 @@ app.post('/hike/overview',restrict, function(request, response) {
 app.post('/hike/specific',restrict, function(request, response) {
     database.specificHike(request,response)
 })
+
+/**
+ * Delete an hike
+ */
+app.post('/hike/remove',restrict, function(request, response) {
+    database.deleteHike(request,response)
+})

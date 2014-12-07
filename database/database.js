@@ -185,3 +185,25 @@ module.exports.specificHike = function(request,response) {
         }
     });
 }
+
+/**
+ * Delete an hike from the database.
+ * @param request
+ * @param response
+ */
+module.exports.deleteHike = function(request,response) {
+    Hike.remove({_id: mongoose.Types.ObjectId(request.body.hikeId), owner: request.session.userId}, function(err, obj) {
+        if (obj) {
+            User.findById(request.session.userId, function(err,owner) {
+                var index = owner.hikes.indexOf(request.body.hikeId);
+                if (index > -1)
+                    owner.hikes.splice(index, 1);
+                owner.save()
+            })
+            utils.httpResponse(response,200,'Hike successfully removed')
+        }
+        else {
+            utils.httpResponse(response,500,'Hike not found')
+        }
+    });
+}
