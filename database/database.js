@@ -50,7 +50,7 @@ var User = mongoose.model('User', userSchema)
 var Hike = mongoose.model('Hike', hikeSchema)
 
 /**
- * Create a new user
+ * Create a new user and log this user in
  * @param request
  * @param response
  */
@@ -79,12 +79,13 @@ module.exports.registerUser = function(request,response) {
                     emailAddress: user.email
                 });
 
-                tmpUser.save(function (err) {
+                tmpUser.save(function (err,dbUser) {
                     if (err) {
                         console.log('Error on save!')
                         utils.httpResponse(response,500,'Error on save')
                     }
                     else {
+                        request.session.userId = dbUser._id
                         utils.httpResponse(response,201,'User successfully created')
                     }
                 });
