@@ -1,10 +1,21 @@
+/**
+ * Global variables
+ */
+utils = require('./utils/utils.js')
+
+/**
+ * Local variables
+ */
 var express = require('express');
 var database = require('./database/database.js')
 var bodyParser = require('body-parser')
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
-
 var app = express();
+
+/**
+ * Express configuration
+ */
 app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname + '/public'))
     .use(bodyParser.json())
@@ -29,43 +40,55 @@ function restrict(req, res, next) {
     if (req.session.userId) {
         next();
     } else {
-        console.log('Access denied!');
-        res.status(403).send({ description: 'Access denied' });
+        utils.httpResponse(res,403,'Access denied !')
     }
 }
 
 /**
- * Default route
+ * Default GET route
  */
 app.get('/', function(request, response) {
-  response.send("Welcome to Rand'On first page (After some commit)")
+    send("Welcome to Rand'On first page (After some commit)")
 })
 
 /**
  * Login an user
  */
-app.post('/login', function(request, response) {
+app.post('/user/login', function(request, response) {
     database.loginUser(request,response);
 })
 
 /**
  * Register an user
  */
-app.post('/register', function(request, response) {
+app.post('/user/register', function(request, response) {
     database.registerUser(request,response);
 })
 
 /**
  * Logout an user
  */
-app.post('/logout',restrict, function(request, response) {
+app.post('/user/logout',restrict, function(request, response) {
     database.logoutUser(request,response);
 })
 
 /**
  * Create a hike
  */
-app.post('/create',restrict, function(request, response) {
+app.post('/hike/create',restrict, function(request, response) {
     database.createHike(request,response)
 })
 
+/**
+ * Get public hikes overview
+ */
+app.post('/hike/overview',restrict, function(request, response) {
+    database.hikeOverview(request,response)
+})
+
+/**
+ * Get specific hike
+ */
+app.post('/hike/specific',restrict, function(request, response) {
+    database.specificHike(request,response)
+})
