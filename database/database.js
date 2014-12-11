@@ -207,3 +207,15 @@ module.exports.deleteHike = function(request,response) {
         }
     });
 }
+
+module.exports.hikeVisibility = function(request,response) {
+    Hike.find({_id: mongoose.Types.ObjectId(request.body.hikeId), owner: request.session.userId}, function(err, obj) {
+        if (obj) {
+            obj.isPrivate = request.body.isPrivate
+            utils.httpResponse(response,200,'Hike visibility successfully changed')
+        }
+        else {
+            utils.httpResponse(response,500,'Hike not found')
+        }
+    }).limit(1);
+}

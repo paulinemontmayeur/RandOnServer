@@ -45,13 +45,6 @@ function restrict(req, res, next) {
 }
 
 /**
- * Default GET route
- */
-app.get('/', function(request, response) {
-    send("Welcome to Rand'On first page (After some commit)")
-})
-
-/**
  * Login an user
  */
 app.post('/user/login', function(request, response) {
