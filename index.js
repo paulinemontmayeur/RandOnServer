@@ -37,8 +37,15 @@ app.listen(app.get('port'), function() {
  * @param next
  */
 function restrict(req, res, next) {
-    if (req.session.userId) {
-        next();
+    if (req.session.userToken) {
+        database.User.findOne({token : req.session.userToken}, function(err, obj) {
+            if (obj) {
+                next()
+            }
+            else {
+                utils.httpResponse(response,500,'Hike not found')
+            }
+        });
     } else {
         utils.httpResponse(res,403,'Access denied !')
     }
@@ -90,5 +97,12 @@ app.post('/hike/specific',restrict, function(request, response) {
  * Delete an hike
  */
 app.post('/hike/remove',restrict, function(request, response) {
+    database.deleteHike(request,response)
+})
+
+/**
+ * Change the hike's visibility
+ */
+app.post('/hike/hikeVisibility',restrict, function(request, response) {
     database.deleteHike(request,response)
 })

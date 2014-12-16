@@ -1,9 +1,9 @@
 /**
  * Created by thomasthiebaud on 25/11/14.
  */
-
 var mongoose = require('mongoose')
 var Entities = require('html-entities').AllHtmlEntities
+var uuid = require('node-uuid')
 
 var uri =
     process.env.MONGOLAB_URI ||
@@ -23,6 +23,7 @@ mongoose.connect(uri, function (err, res) {
  * MongoDB schema
  */
 var userSchema = mongoose.Schema({
+    token           : String,
     userName		: String,
     password		: String,
     emailAddress	: String,
@@ -48,6 +49,9 @@ var hikeSchema = mongoose.Schema({
 
 var User = mongoose.model('User', userSchema)
 var Hike = mongoose.model('Hike', hikeSchema)
+
+module.exports.User = User
+module.exports.Hike = Hike
 
 /**
  * Create a new user and log this user in
@@ -85,7 +89,7 @@ module.exports.registerUser = function(request,response) {
                         utils.httpResponse(response,500,'Error on save')
                     }
                     else {
-                        request.session.userId = dbUser._id
+                        //request.session.userId = dbUser._id
                         utils.httpResponse(response,201,'User successfully created')
                     }
                 });
@@ -105,9 +109,12 @@ module.exports.loginUser = function(request,response) {
         password : request.body.password,
     }
 
-    User.find({userName : user.username ,password : user.password}, function(err, obj) {
-        if (obj.length > 0) {
-            request.session.userId = obj[0]._id;
+    User.findOne({userName : user.username ,password : user.password}, function(err, obj) {
+        if (obj) {
+            obj.token = uuid.v4()
+            console.log("token : " + obj.token)
+            request.session.userToken = obj.token;
+            obj.save()
             utils.httpResponse(response,200,'User found')
         }
         else {
@@ -133,25 +140,27 @@ module.exports.logoutUser = function(request,response) {
  * @param response
  */
 module.exports.createHike = function(request,response) {
-    var tmpHike = new Hike ({
-        name: request.body.name,
-        coordinates: request.body.coordinates,
-        owner: request.session.userId,
-        isPrivate: request.body.isPrivate
-    });
 
-    tmpHike.save(function (err,hike) {
-        if (err) {
-            utils.httpResponse(response,500,'Error on save')
-        }
-        else {
-            User.findById(request.session.userId, function(err,owner) {
+    User.findOne({token : request.session.userToken}, function(err,owner) {
+        var tmpHike = new Hike ({
+            name: request.body.name,
+            coordinates: request.body.coordinates,
+            owner: owner._id,
+            isPrivate: request.body.isPrivate
+        });
+
+        tmpHike.save(function (err,hike) {
+            if (err) {
+                utils.httpResponse(response,500,'Error on save')
+            }
+            else {
                 owner.hikes.push(hike._id)
                 owner.save()
-            })
-            utils.httpResponse(response,201,'Hike successfully created')
-        }
-    });
+                utils.httpResponse(response,201,'Hike successfully created')
+            }
+        });
+    })
+
 }
 
 /**
@@ -160,14 +169,16 @@ module.exports.createHike = function(request,response) {
  * @param response
  */
 module.exports.hikeOverview = function(request,response) {
-    Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: request.session.userId}]},'-coordinates', function(err, obj) {
-        if (obj.length > 0) {
-            response.status(200).send({description : 'Hikes successfully found'},{hikes : obj});
+    User.findOne({token : request.session.userToken}, function(err, obj) {
+        if (obj) {
+            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: obj._id}]},'-coordinates', function(err, obj) {
+                if (obj.length > 0)
+                    response.status(200).send({description : 'Hikes successfully found'},{hikes : obj})
+                else
+                    utils.httpResponse(response,500,'Hikes not found')
+            });
         }
-        else {
-            utils.httpResponse(response,500,'Hikes not found')
-        }
-    });
+    })
 }
 
 /**
@@ -177,12 +188,10 @@ module.exports.hikeOverview = function(request,response) {
  */
 module.exports.specificHike = function(request,response) {
     Hike.findById(mongoose.Types.ObjectId(request.body.hikeId), function(err, obj) {
-        if (obj) {
+        if (obj)
             response.status(200).send({description : 'Hike successfully found'},{hike : obj});
-        }
-        else {
+        else
             utils.httpResponse(response,500,'Hike not found')
-        }
     });
 }
 
@@ -192,30 +201,46 @@ module.exports.specificHike = function(request,response) {
  * @param response
  */
 module.exports.deleteHike = function(request,response) {
-    Hike.remove({_id: mongoose.Types.ObjectId(request.body.hikeId), owner: request.session.userId}, function(err, obj) {
-        if (obj) {
-            User.findById(request.session.userId, function(err,owner) {
-                var index = owner.hikes.indexOf(request.body.hikeId);
-                if (index > -1)
-                    owner.hikes.splice(index, 1);
-                owner.save()
+    User.findOne({token : request.session.userToken}, function(err,owner) {
+        if(owner) {
+            Hike.remove({_id: mongoose.Types.ObjectId(request.body.hikeId), owner: owner._id}, function(err,hike) {
+                if(hike) {
+                    var index = owner.hikes.indexOf(request.body.hikeId);
+                    if (index > -1)
+                        owner.hikes.splice(index, 1);
+                    owner.save()
+                    utils.httpResponse(response,200,'Hike successfully removed')
+                }
+                else {
+                    utils.httpResponse(response,500,'Hike not found')
+                }
             })
-            utils.httpResponse(response,200,'Hike successfully removed')
         }
         else {
-            utils.httpResponse(response,500,'Hike not found')
+            utils.httpResponse(response,500,'Impossible to delete the hike, server is not able to check if you are the owner')
         }
-    });
+    })
 }
 
+/**
+ * Change the hike's visibility
+ * @param request
+ * @param response
+ */
 module.exports.hikeVisibility = function(request,response) {
-    Hike.find({_id: mongoose.Types.ObjectId(request.body.hikeId), owner: request.session.userId}, function(err, obj) {
-        if (obj) {
-            obj.isPrivate = request.body.isPrivate
-            utils.httpResponse(response,200,'Hike visibility successfully changed')
+    User.findOne({token : request.session.userToken}, function(err,owner) {
+        if(owner) {
+            Hike.findOne({_id: mongoose.Types.ObjectId(request.body.hikeId), owner: owner._id}, function(err,hike) {
+                if(hike) {
+                    obj.isPrivate = request.body.isPrivate
+                    utils.httpResponse(response,200,'Hike\'s visibility successfully changed')
+                }
+                else
+                    utils.httpResponse(response,500,'Hike not found')
+            })
         }
         else {
-            utils.httpResponse(response,500,'Hike not found')
+            utils.httpResponse(response,500,'Impossible to change hike\'s visibility, server is not able to check if you are the owner')
         }
-    }).limit(1);
+    })
 }
