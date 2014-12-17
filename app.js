@@ -2,6 +2,20 @@
  * Global variables
  */
 global.__base = __dirname + '/'
+bunyan = require('bunyan');
+log = bunyan.createLogger({
+    name: 'Randon',
+    streams: [
+        {
+            path: __base + 'log/error.log',
+            level: 'warn'
+        },
+        {
+            stream: process.stdout ,
+            level: 'trace'
+        }
+    ]
+});
 
 /**
  * npm modules

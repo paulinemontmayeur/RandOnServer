@@ -14,19 +14,25 @@ var User = require(__base + 'services/database/model.js').User
 function httpResponse(response,code,description) {
     var s
 
-    if(/^1\d+/.test(code))
+    if(/^1\d+/.test(code)) {
         s = '[INFORMATION] '
-    if(/^2\d+/.test(code))
+        log.info(s + description)
+    } else if(/^2\d+/.test(code)) {
         s = '[SUCCESS] '
-    else if(/^3\d+/.test(code))
+        log.info(s + description)
+    } else if(/^3\d+/.test(code)) {
         s = '[REDIRECTION] '
-    else if(/^4\d+/.test(code))
+        log.info(s + description)
+    } else if(/^4\d+/.test(code)) {
         s = '[CLIENT ERROR] '
-    else if(/^5\d+/.test(code))
+        log.error(s + description)
+    } else if(/^5\d+/.test(code)) {
         s = '[SERVER ERROR] '
+        log.error(s + description)
+    }
 
-    console.log(s + description)
-    response.status(code).send({description : description})
+    response.writeHead(code, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({description : description}));
 }
 
 /**

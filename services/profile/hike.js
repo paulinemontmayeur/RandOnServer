@@ -46,8 +46,12 @@ module.exports.hikeOverview = function(request,response) {
     User.findOne({token : request.session.userToken}, function(err, obj) {
         if (obj) {
             Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: obj._id}]},'-coordinates', function(err, obj) {
-                if (obj.length > 0)
-                    response.status(200).send({description : 'Hikes successfully found'},{hikes : obj})
+                if (obj.length > 0) {
+                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                    response.write(JSON.stringify({description : 'Hikes successfully found'}));
+                    response.write(JSON.stringify({hikes: obj}))
+                    response.end()
+                }
                 else
                     utils.httpResponse(response,500,'Hikes not found')
             });
