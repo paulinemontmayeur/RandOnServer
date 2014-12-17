@@ -21,7 +21,7 @@ app.post('/user/register', function(request, response) {
 /**
  * Logout an user
  */
-app.post('/user/logout',restrict, function(request, response) {
+app.get('/user/logout',restrict, function(request, response) {
     user.logoutUser(request,response);
 })
 
@@ -35,14 +35,14 @@ app.post('/hike/create',restrict, function(request, response) {
 /**
  * Get public hikes overview
  */
-app.post('/hike/overview',restrict, function(request, response) {
+app.get('/hike/overview',restrict, function(request, response) {
     hike.hikeOverview(request,response)
 })
 
 /**
  * Get specific hike
  */
-app.post('/hike/specific',restrict, function(request, response) {
+app.get('/hike/specific',restrict, function(request, response) {
     hike.specificHike(request,response)
 })
 
