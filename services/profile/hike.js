@@ -47,10 +47,11 @@ module.exports.hikeOverview = function(request,response) {
         if (obj) {
             Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: obj._id}]},'-coordinates', function(err, obj) {
                 if (obj.length > 0) {
-                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                    /*response.writeHead(200, { 'Content-Type': 'application/json' });
                     response.write(JSON.stringify({description : 'Hikes successfully found'}));
                     response.write(JSON.stringify({hikes: obj}))
-                    response.end()
+                    response.end()*/
+                    utils.httpResponse(response,200,'Hikes successfully found',obj)
                 }
                 else
                     utils.httpResponse(response,500,'Hikes not found')

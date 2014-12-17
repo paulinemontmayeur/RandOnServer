@@ -11,7 +11,7 @@ var User = require(__base + 'services/database/model.js').User
  * @param code Http status code
  * @param description Description of the response
  */
-function httpResponse(response,code,description) {
+function httpResponse(response,code,description,content) {
     var s
 
     if(/^1\d+/.test(code)) {
@@ -32,7 +32,13 @@ function httpResponse(response,code,description) {
     }
 
     response.writeHead(code, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({description : description}));
+
+    if(content === undefined)
+        response.write(JSON.stringify({description : description}))
+    else
+        response.write(JSON.stringify({description : description,content : content}))
+
+    response.end()
 }
 
 /**
