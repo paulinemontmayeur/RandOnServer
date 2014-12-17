@@ -47,10 +47,6 @@ module.exports.hikeOverview = function(request,response) {
         if (obj) {
             Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: obj._id}]},'-coordinates', function(err, obj) {
                 if (obj.length > 0) {
-                    /*response.writeHead(200, { 'Content-Type': 'application/json' });
-                    response.write(JSON.stringify({description : 'Hikes successfully found'}));
-                    response.write(JSON.stringify({hikes: obj}))
-                    response.end()*/
                     utils.httpResponse(response,200,'Hikes successfully found',obj)
                 }
                 else
@@ -68,7 +64,7 @@ module.exports.hikeOverview = function(request,response) {
 module.exports.specificHike = function(request,response) {
     Hike.findById(mongoose.Types.ObjectId(request.body.hikeId), function(err, obj) {
         if (obj)
-            response.status(200).send({description : 'Hike successfully found'},{hike : obj});
+            utils.httpResponse(response,200,'Hike successfully found',obj)
         else
             utils.httpResponse(response,500,'Hike not found')
     });
