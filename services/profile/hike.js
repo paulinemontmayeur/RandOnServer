@@ -62,7 +62,7 @@ module.exports.hikeOverview = function(request,response) {
  * @param response
  */
 module.exports.specificHike = function(request,response) {
-    Hike.findById(mongoose.Types.ObjectId(request.body.hikeId), function(err, obj) {
+    Hike.findById(mongoose.Types.ObjectId(request.query.hikeId), function(err, obj) {
         if (obj)
             utils.httpResponse(response,200,'Hike successfully found',obj)
         else
@@ -117,5 +117,19 @@ module.exports.hikeVisibility = function(request,response) {
         else {
             utils.httpResponse(response, 500, 'Impossible to change hike\'s visibility, server is not able to check if you are the owner')
         }
+    })
+}
+
+/**
+ * Checks if the given name exists
+ * @param request
+ * @param response
+ */
+module.exports.exists = function(request,response) {
+    Hike.findOne({name : request.query.name}, function(err,hike) {
+        if(hike)
+            utils.httpResponse(response,200,'Name already used',true)
+        else
+            utils.httpResponse(response,200,'Free name',false)
     })
 }

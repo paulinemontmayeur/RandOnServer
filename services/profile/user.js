@@ -66,7 +66,7 @@ module.exports.loginUser = function(request,response) {
 }
 
 /**
- * Log in the user and add it into the session
+ * Log in the user and ad   d it into the session
  * @param user User to log in
  * @param request
  * @param response

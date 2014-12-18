@@ -59,3 +59,10 @@ app.post('/hike/remove',restrict, function(request, response) {
 app.post('/hike/hikeVisibility',restrict, function(request, response) {
     hike.deleteHike(request,response)
 })
+
+/**
+ * Checks if the given name exists
+ */
+app.get('/hike/exists',restrict, function(request,response) {
+    hike.exists(request,response)
+})
