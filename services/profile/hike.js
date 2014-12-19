@@ -43,11 +43,11 @@ module.exports.createHike = function(request,response) {
  * @param response
  */
 module.exports.hikeOverview = function(request,response) {
-    User.findOne({token : request.session.userToken}, function(err, obj) {
-        if (obj) {
-            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: obj._id}]},'-coordinates', function(err, obj) {
-                if (obj.length > 0) {
-                    utils.httpResponse(response,200,'Hikes successfully found',obj)
+    User.findOne({token : request.session.userToken}, function(err, user) {
+        if (user) {
+            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: user._id}]},'-coordinates', function(err, hikes) {
+                if (hikes) {
+                    utils.httpResponse(response,200,'Hikes successfully found',hikes)
                 }
                 else
                     utils.httpResponse(response,500,'Hikes not found')
@@ -102,12 +102,13 @@ module.exports.deleteHike = function(request,response) {
  * @param request
  * @param response
  */
-module.exports.hikeVisibility = function(request,response) {
+module.exports.visibility = function(request,response) {
     User.findOne({token: request.session.userToken}, function (err, owner) {
         if (owner) {
             Hike.findOne({_id: mongoose.Types.ObjectId(request.body.hikeId), owner: owner._id}, function (err, hike) {
                 if (hike) {
-                    obj.isPrivate = request.body.isPrivate
+                    hike.isPrivate = request.body.isPrivate
+                    hike.save()
                     utils.httpResponse(response, 200, 'Hike\'s visibility successfully changed')
                 }
                 else
@@ -131,5 +132,28 @@ module.exports.exists = function(request,response) {
             utils.httpResponse(response,200,'Name already used',true)
         else
             utils.httpResponse(response,200,'Free name',false)
+    })
+}
+
+/**
+ * Get all hikes sorted by proximity with the user. The result does not include all the coordinates but just the start point
+ * @param request
+ * @param response
+ */
+module.exports.proximity = function(request,response) {
+    User.findOne({token : request.session.userToken}, function(err, user) {
+        if (user) {
+            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: obj._id}]},{coordinates : {$slice : 1}}, function(err, hikes) {
+                hikes.sort(function(x, y){
+                    return utils.distance(x.coordinates[0].lat, x.coordinates[0].long,request.query.lat,request.query.long) - utils.distance(y.coordinates[0].lat, y.coordinates[0].long,request.query.lat,request.query.long)
+                });
+
+                if (hikes) {
+                    utils.httpResponse(response,200,'Hikes successfully found',obj)
+                }
+                else
+                    utils.httpResponse(response,500,'Hikes not found')
+            });
+        }
     })
 }

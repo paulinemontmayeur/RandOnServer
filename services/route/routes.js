@@ -40,6 +40,10 @@ app.get('/hike/overview',restrict, function(request, response) {
     hike.hikeOverview(request,response)
 })
 
+app.get('/hike/overview/proximity',restrict, function(request, response) {
+    hike.proximity(request,response)
+})
+
 /**
  * Get specific hike
  */
@@ -57,8 +61,8 @@ app.post('/hike/remove',restrict, function(request, response) {
 /**
  * Change the hike's visibility
  */
-app.post('/hike/hikeVisibility',restrict, function(request, response) {
-    hike.deleteHike(request,response)
+app.post('/hike/visibility',restrict, function(request, response) {
+    hike.visibility(request,response)
 })
 
 /**

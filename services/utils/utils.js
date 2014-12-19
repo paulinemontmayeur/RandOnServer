@@ -73,9 +73,17 @@ function checkParameter(request,response,name,type) {
     //TODO Check if the given parameter exists and if it is to the right format
 }
 
+function distance(lat1,long1,lat2,long2) {
+    var R = 6378137
+    var r1 = Math.pow(Math.sin((lat2-lat1)/2),2)
+    var r2 = Math.pow(Math.sin((long2-long1)/2),2)
+    return 2 * R * Math.sqrt(r1 + Math.cos(lat1) * Math.cos(lat2) * r2)
+}
+
 /**
  * Export functions
  */
 module.exports.httpResponse = httpResponse
 module.exports.restrict = restrict
 module.exports.checkParameter = checkParameter
+module.exports.distance = distance

@@ -74,7 +74,7 @@ module.exports.overview = function(request,response) {
                 if (err)
                     utils.httpResponse(response,500,'Impossible to get the history')
                 else
-                    utils.httpResponse(response,200,'Hikes successfully found',history)
+                    utils.httpResponse(response,200,'History successfully found',history)
             });
         }
     })
