@@ -3,6 +3,7 @@ var restrict = require(__base + 'services/utils/utils.js').restrict
 
 var user = require(__base + 'services/profile/user.js')
 var hike = require(__base + 'services/profile/hike.js')
+var history = require(__base + 'services/profile/history.js')
 
 /**
  * Login an user
@@ -65,4 +66,25 @@ app.post('/hike/hikeVisibility',restrict, function(request, response) {
  */
 app.get('/hike/exists',restrict, function(request,response) {
     hike.exists(request,response)
+})
+
+/**
+ * Add an hike into the history
+ */
+app.post('/history/add',restrict, function(request,response) {
+    history.add(request,response)
+})
+
+/**
+ * Remove an hike from the history
+ */
+app.post('/history/remove',restrict, function(request,response) {
+    history.remove(request,response)
+})
+
+/**
+ * Get all the hikes from the history. This does not include coordinates
+ */
+app.get('/history/overview',restrict, function(request,response) {
+    history.overview(request,response)
 })

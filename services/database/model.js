@@ -15,7 +15,7 @@ var userSchema = mongoose.Schema({
     hikes           : [{
         type: mongoose.Schema.Types.ObjectId, ref: 'Hike'
     }],
-    history           : [{
+    history         : [{
         type: mongoose.Schema.Types.ObjectId, ref: 'Hike'
     }]
 })
