@@ -1,9 +1,18 @@
 var app = require(__base + 'app.js').app
+var sanitize = require(__base + 'services/utils/utils.js').sanitize
 var restrict = require(__base + 'services/utils/utils.js').restrict
 
 var user = require(__base + 'services/profile/user.js')
 var hike = require(__base + 'services/profile/hike.js')
 var history = require(__base + 'services/profile/history.js')
+
+/**
+ * Transcoding content to HTML to avoid injection
+ * This is applicable to all queries, so the route is "*"
+ */
+ app.all('*', sanitize, function(request, response, next) {
+    next();
+ })
 
 /**
  * Login an user
