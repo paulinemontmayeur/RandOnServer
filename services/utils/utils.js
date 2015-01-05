@@ -84,14 +84,28 @@ function distance(lat1,long1,lat2,long2) {
  * Sanitize input by calling ent.encode(). All HTML and NodeJS special 
  * chars are transcoded to HTML representation
  */
- function sanitize(req, res, next){
-    //Get an array of key from Object req.body
-    var params = Object.keys(req.body);
-    //For each key, we replace the value by the sanitized one (numeric version : &#39;)
-    params.forEach( function(param){ 
-        req.body[param] = Entities.encode(req.body[param], {numeric: true, named: false});
-    })
+ function sanitizer(req, res, next){
+    sanitize(req.body);
+    console.log(req.body);
     next();
+ }
+/**
+ * Recursive function that sanitize an object. The recursivity works because
+ * no callbacks are called.
+ */
+ function sanitize(object){
+    //Get an array of key from Object req.body
+    var params = Object.keys(object);
+    console.log('Params : ', params)
+    //For each key, we replace the value by the sanitized one (numeric version : &#39;)
+    params.forEach(function(param){
+        if(typeof object[param] === 'string' || object[param] instanceof String > 0){
+            object[param] = Entities.encode(object[param], {numeric: true, named: false});
+        }
+        else{
+            sanitize(object[param])
+        }
+    })
  }
 
 /**
@@ -101,4 +115,4 @@ module.exports.httpResponse = httpResponse
 module.exports.restrict = restrict
 module.exports.checkParameter = checkParameter
 module.exports.distance = distance
-module.exports.sanitize = sanitize
+module.exports.sanitizer = sanitizer
