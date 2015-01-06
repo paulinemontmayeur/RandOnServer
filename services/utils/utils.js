@@ -95,26 +95,18 @@ function distance(lat1,long1,lat2,long2) {
  */
  function sanitize(object){
     if(typeof object === 'string' || object instanceof String > 0){
-        console.log('Str : ',object)
         object = Entities.encode(object, {numeric : true, named : false});
     }
-    else{
+    else if(Array.isArray(object)){
+        for (var i = 0; i < object.length; i++) {
+            object[i] = sanitize(object[i]);
+        };
+    }
+    else if(typeof object === 'object' || object instanceof Object > 0){
         //Get an array of key from Object req.body
-        var params = Object.keys(object);
-        //For each key, we replace the value by the sanitized one (numeric version : &#39;)
-        params.forEach(function(param){
-            if(typeof object[param] === 'string' || object[param] instanceof String > 0){
-                object[param] = sanitize(object[param]);
-            }
-            else if(Array.isArray(object[param])){
-                for (var i = 0; i < object[param].length; i++) {
-                    console.log('Arr : ',object[param][i])
-                    object[param][i] = sanitize(object[param][i]);
-                };
-            }
-            else if(typeof object[param] === 'object' || object[param] instanceof Object > 0){
-                sanitize(object[param]);
-            }
+        var values = Object.keys(object);
+        values.forEach(function(value){
+            object[value] = sanitize(object[value]);
         });
     }
     return object;
