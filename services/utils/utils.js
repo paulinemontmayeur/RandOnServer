@@ -86,6 +86,7 @@ function distance(lat1,long1,lat2,long2) {
  */
  function sanitizer(req, res, next){
     sanitize(req.body);
+    console.log(req.body)
     next();
  }
 /**
@@ -94,7 +95,8 @@ function distance(lat1,long1,lat2,long2) {
  */
  function sanitize(object){
     if(typeof object === 'string' || object instanceof String > 0){
-        return Entities.encode(object, {numeric : true, named : false});
+        console.log('Str : ',object)
+        object = Entities.encode(object, {numeric : true, named : false});
     }
     else{
         //Get an array of key from Object req.body
@@ -106,14 +108,16 @@ function distance(lat1,long1,lat2,long2) {
             }
             else if(Array.isArray(object[param])){
                 for (var i = 0; i < object[param].length; i++) {
+                    console.log('Arr : ',object[param][i])
                     object[param][i] = sanitize(object[param][i]);
                 };
             }
-            else{
+            else if(typeof object[param] === 'object' || object[param] instanceof Object > 0){
                 sanitize(object[param]);
             }
         });
     }
+    return object;
  }
 
 /**
