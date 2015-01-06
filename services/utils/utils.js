@@ -86,7 +86,6 @@ function distance(lat1,long1,lat2,long2) {
  */
  function sanitizer(req, res, next){
     sanitize(req.body);
-    console.log(req.body);
     next();
  }
 /**
@@ -94,18 +93,27 @@ function distance(lat1,long1,lat2,long2) {
  * no callbacks are called.
  */
  function sanitize(object){
-    //Get an array of key from Object req.body
-    var params = Object.keys(object);
-    console.log('Params : ', params)
-    //For each key, we replace the value by the sanitized one (numeric version : &#39;)
-    params.forEach(function(param){
-        if(typeof object[param] === 'string' || object[param] instanceof String > 0){
-            object[param] = Entities.encode(object[param], {numeric: true, named: false});
-        }
-        else{
-            sanitize(object[param])
-        }
-    })
+    if(typeof object === 'string' || object instanceof String > 0){
+        return Entities.encode(object, {numeric : true, named : false});
+    }
+    else{
+        //Get an array of key from Object req.body
+        var params = Object.keys(object);
+        //For each key, we replace the value by the sanitized one (numeric version : &#39;)
+        params.forEach(function(param){
+            if(typeof object[param] === 'string' || object[param] instanceof String > 0){
+                object[param] = sanitize(object[param]);
+            }
+            else if(Array.isArray(object[param])){
+                for (var i = 0; i < object[param].length; i++) {
+                    object[param][i] = sanitize(object[param][i]);
+                };
+            }
+            else{
+                sanitize(object[param]);
+            }
+        });
+    }
  }
 
 /**
