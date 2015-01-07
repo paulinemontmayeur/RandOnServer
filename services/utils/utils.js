@@ -85,31 +85,43 @@ function distance(lat1,long1,lat2,long2) {
  * chars are transcoded to HTML representation
  */
  function sanitizer(req, res, next){
-    sanitize(req.body);
-    console.log(req.body)
-    next();
+    var arr = sanitize(req.body, 0);
+    if(arr[1] == -1){
+        httpResponse(res,500,'The JSON was not correct. Cannot accept data.');
+    }
+    else{
+        req.body = arr[0];
+        next();
+    }
  }
 /**
  * Recursive function that sanitize an object. The recursivity works because
  * no callbacks are called.
  */
- function sanitize(object){
+ function sanitize(object, error){
     if(typeof object === 'string' || object instanceof String > 0){
         object = Entities.encode(object, {numeric : true, named : false});
     }
     else if(Array.isArray(object)){
         for (var i = 0; i < object.length; i++) {
-            object[i] = sanitize(object[i]);
+            var arr = sanitize(object[i], error);
+            object[i] = arr[0];
+            error = (arr[1] == -1) ? arr[1] : error;
         };
     }
     else if(typeof object === 'object' || object instanceof Object > 0){
         //Get an array of key from Object req.body
         var values = Object.keys(object);
         values.forEach(function(value){
-            object[value] = sanitize(object[value]);
+            var arr = sanitize(object[value], error);
+            object[value] = arr[0];
+            error = (arr[1] == -1) ? arr[1] : error;
         });
     }
-    return object;
+    else{
+        error = -1;
+    }
+    return [object, error];
  }
 
 /**

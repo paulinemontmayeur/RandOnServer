@@ -10,8 +10,8 @@ var history = require(__base + 'services/profile/history.js')
  * Transcoding content to HTML to avoid injection
  * This is applicable to all queries, so the route is "*"
  */
- app.all('*', sanitizer, function(request, response, next) {
-    next();
+ app.all('*', function(request, response, next) {
+    sanitizer(request, response, next);
  })
 
 /**
