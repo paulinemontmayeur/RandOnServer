@@ -39,6 +39,10 @@ Hike.schema.path('length').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'A length must be set')
 
+Hike.schema.path('date').validate(function (value) {
+    return checkNull(value) && checkUndefined(value) && checkLength(value,0)
+}, 'A date must be set')
+
 Hike.schema.path('owner').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'An owner must be set')

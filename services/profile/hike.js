@@ -20,6 +20,7 @@ module.exports.createHike = function(request,response) {
             name: request.body.name,
             length: request.body.length,
             duration: request.body.duration,
+            date: request.body.date,
             coordinates: request.body.coordinates,
             owner: owner._id,
             isPrivate: request.body.isPrivate
