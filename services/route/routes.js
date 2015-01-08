@@ -1,5 +1,5 @@
 var app = require(__base + 'app.js').app
-var sanitizer = require(__base + 'services/utils/utils.js').sanitizer
+var encode = require(__base + 'services/utils/utils.js').encode
 var restrict = require(__base + 'services/utils/utils.js').restrict
 
 var user = require(__base + 'services/profile/user.js')
@@ -11,7 +11,7 @@ var history = require(__base + 'services/profile/history.js')
  * This is applicable to all queries, so the route is "*"
  */
  app.all('*', function(request, response, next) {
-    sanitizer(request, response, next);
+    encode(request, response, next);
  })
 
 /**

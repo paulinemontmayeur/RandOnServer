@@ -28,7 +28,7 @@ module.exports.createHike = function(request,response) {
 
         tmpHike.save(function (err,hike) {
             if (err) {
-                utils.httpResponse(response,500,'Error on save')
+                utils.httpResponse(response,500,err)
             }
             else {
                 owner.hikes.push(hike._id)
@@ -38,7 +38,6 @@ module.exports.createHike = function(request,response) {
             }
         });
     })
-
 }
 
 /**

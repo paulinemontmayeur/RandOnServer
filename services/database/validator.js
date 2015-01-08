@@ -5,7 +5,6 @@
 var User = require(__base + 'services/database/model.js').User
 var Hike = require(__base + 'services/database/model.js').Hike
 
-
 User.schema.path('username').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'A username must be set');
