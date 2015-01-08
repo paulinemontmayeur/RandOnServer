@@ -5,6 +5,7 @@
 var User = require(__base + 'services/database/model.js').User
 var uuid = require('node-uuid')
 var utils = require(__base + 'services/utils/utils.js')
+var validator = require(__base + 'services/database/validator.js')
 
 /**
  * Create a new user and log this user in
@@ -29,15 +30,12 @@ module.exports.registerUser = function(request,response) {
                 password : user.password,
                 email : user.email
             });
-
-            tmpUser.save(function (err,dbUser) {
-                if (err) {
-                    console.log('Error on save!')
-                    utils.httpResponse(response,500,'Error on save')
-                }
-                else {
+            tmpUser.save(function (err) {
+                if (err)
+                    utils.httpResponse(response,500,err)
+                else
                     loginUser(tmpUser,request,response)
-                }
+
             });
         }
     });
@@ -67,7 +65,6 @@ function loginUser(user,request,response) {
     User.findOne({username : user.username ,password : user.password}, function(err, obj) {
         if (obj) {
             obj.token = uuid.v4()
-            console.log("token : " + obj.token)
             request.session.userToken = obj.token;
             obj.save()
             utils.httpResponse(response,200,'User successfully (created and) logged in')

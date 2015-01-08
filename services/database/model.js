@@ -23,6 +23,8 @@ var userSchema = mongoose.Schema({
 var hikeSchema = mongoose.Schema({
     name            : String,
     isPrivate       : Boolean,
+    duration        : Number,
+    length          : Number,
     owner           : {
         type: mongoose.Schema.Types.ObjectId, ref: 'User'
     },
@@ -31,7 +33,6 @@ var hikeSchema = mongoose.Schema({
         long: Number
     }]
 })
-
 
 /**
  * Mongo model

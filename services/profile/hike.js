@@ -18,6 +18,8 @@ module.exports.createHike = function(request,response) {
     User.findOne({token : request.session.userToken}, function(err,owner) {
         var tmpHike = new Hike ({
             name: request.body.name,
+            length: request.body.length,
+            duration: request.body.duration,
             coordinates: request.body.coordinates,
             owner: owner._id,
             isPrivate: request.body.isPrivate
@@ -29,6 +31,7 @@ module.exports.createHike = function(request,response) {
             }
             else {
                 owner.hikes.push(hike._id)
+                owner.history.push(hike._id)
                 owner.save()
                 utils.httpResponse(response,201,'Hike successfully created')
             }
