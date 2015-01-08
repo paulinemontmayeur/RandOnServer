@@ -21,15 +21,17 @@ var userSchema = mongoose.Schema({
 })
 
 var hikeSchema = mongoose.Schema({
-    name            : String,
-    isPrivate       : Boolean,
-    duration        : String,
-    date            : String,
-    length          : Number,
-    owner           : {
+    name                : String,
+    isPrivate           : Boolean,
+    duration            : String,
+    date                : String,
+    length              : Number,
+    positiveHeightDiff  : Number,
+    negativeHeightDiff  : Number,
+    owner               : {
         type: mongoose.Schema.Types.ObjectId, ref: 'User'
     },
-    coordinates     : [{
+    coordinates         : [{
         lat: Number,
         long: Number
     }]

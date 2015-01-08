@@ -17,13 +17,15 @@ module.exports.createHike = function(request,response) {
 
     User.findOne({token : request.session.userToken}, function(err,owner) {
         var tmpHike = new Hike ({
-            name: request.body.name,
-            length: request.body.length,
-            duration: request.body.duration,
-            date: request.body.date,
-            coordinates: request.body.coordinates,
-            owner: owner._id,
-            isPrivate: request.body.isPrivate
+            name                : request.body.name,
+            length              : request.body.length,
+            duration            : request.body.duration,
+            date                : request.body.date,
+            coordinates         : request.body.coordinates,
+            owner               : owner._id,
+            isPrivate           : request.body.isPrivate,
+            positiveHeightDiff  : request.body.positiveHeightDiff,
+            negativeHeightDiff  : request.body.negativeHeightDiff
         });
 
         tmpHike.save(function (err,hike) {

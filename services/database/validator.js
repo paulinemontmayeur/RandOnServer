@@ -46,9 +46,19 @@ Hike.schema.path('owner').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'An owner must be set')
 
+Hike.schema.path('positiveHeightDiff').validate(function (value) {
+    return checkNull(value) && checkUndefined(value) && checkLength(value,0)
+}, 'A positive height difference must be set')
+
+Hike.schema.path('negativeHeightDiff').validate(function (value) {
+    return checkNull(value) && checkUndefined(value) && checkLength(value,0)
+}, 'A negative height difference must be set')
+
 Hike.schema.path('coordinates').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'A hike must contain an array of coordinates')
+
+
 
 function checkNull(value) {
     return value !== null && value !== "null"

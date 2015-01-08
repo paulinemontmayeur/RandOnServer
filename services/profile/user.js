@@ -15,9 +15,9 @@ var validator = require(__base + 'services/database/validator.js')
 module.exports.registerUser = function(request,response) {
     
     var user = {
-        username : request.body.username,
-        password : request.body.password,
-        email : request.body.email
+        username    : request.body.username,
+        password    : request.body.password,
+        email       : request.body.email
     }
 
     User.find({username : user.username}, function(err, obj) {
