@@ -13,6 +13,17 @@ User.schema.path('password').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'A password must be set')
 
+User.schema.path('password').validate(function (value) {
+    return checkNull(value) && checkUndefined(value) && checkLength(value,0)
+}, 'A password must be set')
+
+/*
+User.schema.path('password').validate(function (value) {
+    var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/
+    return re.test(value)
+}, 'A password must contain at least one digit, one lower case, one upper and between 8 and 16 elements')
+*/
+
 User.schema.path('email').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'An email must be set')
