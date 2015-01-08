@@ -54,6 +54,10 @@ Hike.schema.path('negativeHeightDiff').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'A negative height difference must be set')
 
+Hike.schema.path('averageSpeed').validate(function (value) {
+    return checkNull(value) && checkUndefined(value) && checkLength(value,0)
+}, 'An average speed must be set')
+
 Hike.schema.path('coordinates').validate(function (value) {
     return checkNull(value) && checkUndefined(value) && checkLength(value,0)
 }, 'A hike must contain an array of coordinates')

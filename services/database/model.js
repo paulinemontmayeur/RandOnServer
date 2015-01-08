@@ -28,6 +28,7 @@ var hikeSchema = mongoose.Schema({
     length              : Number,
     positiveHeightDiff  : Number,
     negativeHeightDiff  : Number,
+    averageSpeed        : Number,
     owner               : {
         type: mongoose.Schema.Types.ObjectId, ref: 'User'
     },
