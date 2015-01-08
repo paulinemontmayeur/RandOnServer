@@ -148,13 +148,13 @@ module.exports.exists = function(request,response) {
 module.exports.proximity = function(request,response) {
     User.findOne({token : request.session.userToken}, function(err, user) {
         if (user) {
-            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: obj._id}]},{coordinates : {$slice : 1}}, function(err, hikes) {
+            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: user._id}]},{coordinates : {$slice : 1}}, function(err, hikes) {
                 hikes.sort(function(x, y){
                     return utils.distance(x.coordinates[0].lat, x.coordinates[0].long,request.query.lat,request.query.long) - utils.distance(y.coordinates[0].lat, y.coordinates[0].long,request.query.lat,request.query.long)
                 });
 
                 if (hikes) {
-                    utils.httpResponse(response,200,'Hikes successfully found',obj)
+                    utils.httpResponse(response,200,'Hikes successfully found',hikes)
                 }
                 else
                     utils.httpResponse(response,500,'Hikes not found')

@@ -36,7 +36,7 @@ function httpResponse(response,code,description,content) {
     if(content === undefined)
         response.write(JSON.stringify({description : description}))
     else
-        response.write(JSON.stringify({description : description,content : decode(content)}))
+        response.write(JSON.stringify({description : description,content : /*decode(*/content/*)*/}))
 
     response.end()
 }
@@ -125,6 +125,7 @@ function distance(lat1,long1,lat2,long2) {
     return [object, error];
  }
 
+/*
 function decode(object) {
     var arr = decodeJSON(object, 0);
     return arr[0]
@@ -155,7 +156,7 @@ function decodeJSON(object,error) {
     }
     return [object, error];
 }
-
+*/
 
 /**
  * Export functions
