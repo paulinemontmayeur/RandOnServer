@@ -25,7 +25,8 @@ module.exports.createHike = function(request,response) {
             owner               : owner._id,
             isPrivate           : request.body.isPrivate,
             positiveHeightDiff  : request.body.positiveHeightDiff,
-            negativeHeightDiff  : request.body.negativeHeightDiff
+            negativeHeightDiff  : request.body.negativeHeightDiff,
+            averageSpeed        : request.body.averageSpeed
         });
 
         tmpHike.save(function (err,hike) {
