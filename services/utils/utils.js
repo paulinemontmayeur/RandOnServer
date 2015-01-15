@@ -74,10 +74,10 @@ function checkParameter(request,response,name,type) {
 }
 
 function distance(lat1,long1,lat2,long2) {
-    var R = 6378137
+    var R = 6371
     var r1 = Math.pow(Math.sin((lat2-lat1)/2),2)
     var r2 = Math.pow(Math.sin((long2-long1)/2),2)
-    return 2 * R * Math.sqrt(r1 + Math.cos(lat1) * Math.cos(lat2) * r2)
+    return 2 * R * Math.asin(Math.sqrt(r1 + Math.cos(lat1) * Math.cos(lat2) * r2))
 }
 
 /**

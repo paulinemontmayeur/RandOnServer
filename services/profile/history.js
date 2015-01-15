@@ -70,7 +70,7 @@ module.exports.remove = function(request,response) {
 module.exports.overview = function(request,response) {
     User.findOne({token : request.session.userToken}, function(err, user) {
         if (user) {
-            Hike.find({_id : {$in : user.history}},'-coordinates', function(err, history) {
+            Hike.find({_id : {$in : user.history}},'-coordinates -isPrivate -owner -__v', function(err, history) {
                 if (err)
                     utils.httpResponse(response,500,'Impossible to get the history')
                 else

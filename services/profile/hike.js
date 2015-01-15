@@ -51,7 +51,7 @@ module.exports.createHike = function(request,response) {
 module.exports.hikeOverview = function(request,response) {
     User.findOne({token : request.session.userToken}, function(err, user) {
         if (user) {
-            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: user._id}]},'-coordinates', function(err, hikes) {
+            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: user._id}]},'-coordinates -isPrivate -owner -__v', function(err, hikes) {
                 if (hikes) {
                     utils.httpResponse(response,200,'Hikes successfully found',hikes)
                 }
@@ -149,17 +149,33 @@ module.exports.exists = function(request,response) {
 module.exports.proximity = function(request,response) {
     User.findOne({token : request.session.userToken}, function(err, user) {
         if (user) {
-            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: user._id}]},{coordinates : {$slice : 1}}, function(err, hikes) {
+            Hike.find({$or:[{isPrivate : false},{isPrivate : true, owner: user._id}]},'-isPrivate -owner -__v', function(err, hikes) {
                 hikes.sort(function(x, y){
-                    return utils.distance(x.coordinates[0].lat, x.coordinates[0].long,request.query.lat,request.query.long) - utils.distance(y.coordinates[0].lat, y.coordinates[0].long,request.query.lat,request.query.long)
+                    var dx = utils.distance(x.coordinates[0].lat, x.coordinates[0].long,request.query.lat,request.query.long)
+                    var dy = utils.distance(y.coordinates[0].lat, y.coordinates[0].long,request.query.lat,request.query.long)
+                    return dx - dy
                 });
 
+                var finalHike = new Array()
+
+                for (var i = 0, len = hikes.length; i < len; i++) {
+                    var tmp = {
+                        _id : hikes[i]._id,
+                        name : hikes[i].name,
+                        length : hikes[i].length,
+                        duration : hikes[i].duration,
+                        date : hikes[i].date,
+                        proximity : utils.distance(hikes[i].coordinates[0].lat, hikes[i].coordinates[0].long,request.query.lat,request.query.long)
+                    }
+                    finalHike.push(tmp);
+                }
+
                 if (hikes) {
-                    utils.httpResponse(response,200,'Hikes successfully found',hikes)
+                    utils.httpResponse(response,200,'Hikes successfully found',finalHike)
                 }
                 else
                     utils.httpResponse(response,500,'Hikes not found')
-            });
+            })
         }
     })
 }
