@@ -36,7 +36,7 @@ function httpResponse(response,code,description,content) {
     if(content === undefined)
         response.write(JSON.stringify({description : description}))
     else
-        response.write(JSON.stringify({description : description,content : /*decode(*/content/*)*/}))
+        response.write(JSON.stringify({description : description,content : decode(content)}))
 
     response.end()
 }
@@ -86,6 +86,7 @@ function distance(lat1,long1,lat2,long2) {
  */
  function encode(req, res, next){
     var arr = encodeJSON(req.body, 0);
+    console.log('fin : ',req.body);
     if(arr[1] == -1){
         httpResponse(res,500,'The JSON was not correct. Cannot accept data.');
     }
@@ -100,12 +101,15 @@ function distance(lat1,long1,lat2,long2) {
  * no callbacks are called.
  */
  function encodeJSON(object, error){
+    console.log('entree : ',object)
     if(typeof object === 'string' || object instanceof String > 0){
         object = Entities.encode(object, {numeric : true, named : false});
     }
     else if(Array.isArray(object)){
         for (var i = 0; i < object.length; i++) {
-            var arr = encodeJSON(object[i], error);
+            var arr = []
+            console.log('array : ',object)
+            arr = encodeJSON(object[i], error) 
             object[i] = arr[0];
             error = (arr[1] == -1) ? arr[1] : error;
         };
@@ -114,7 +118,9 @@ function distance(lat1,long1,lat2,long2) {
         //Get an array of key from Object req.body
         var values = Object.keys(object);
         values.forEach(function(value){
-            var arr = encodeJSON(object[value], error);
+            var arr = []
+            console.log('object : ',object)
+            arr = encodeJSON(object[value], error)
             object[value] = arr[0];
             error = (arr[1] == -1) ? arr[1] : error;
         });
@@ -125,38 +131,6 @@ function distance(lat1,long1,lat2,long2) {
     return [object, error];
  }
 
-/*
-function decode(object) {
-    var arr = decodeJSON(object, 0);
-    return arr[0]
-}
-
-function decodeJSON(object,error) {
-    if(typeof object === 'string' || object instanceof String > 0){
-        object = Entities.decode(object, {numeric : true, named : false});
-    }
-    else if(Array.isArray(object)){
-        for (var i = 0; i < object.length; i++) {
-            var arr = decodeJSON(object[i],error);
-            object[i] = arr[0];
-            error = (arr[1] == -1) ? arr[1] : error;
-        };
-    }
-    else if(typeof object === 'object' || object instanceof Object > 0){
-        //Get an array of key from Object req.body
-        var values = Object.keys(object);
-        values.forEach(function(value){
-            var arr = decodeJSON(object[value],error);
-            object[value] = arr[0];
-            error = (arr[1] == -1) ? arr[1] : error;
-        });
-    }
-    else{
-        error = -1;
-    }
-    return [object, error];
-}
-*/
 
 /**
  * Export functions
